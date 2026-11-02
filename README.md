@@ -1,26 +1,14 @@
-# Urban vegetation-to-built-up change detection
+# Sentinel-2 urban change detection
 
-A reproducible research project for detecting vegetation-to-built-up land-cover transitions from multitemporal Sentinel-2 imagery. North Bengaluru is the primary study area; geographic holdouts and an independent city will test transfer.
+A PyTorch and GIS research project with a supervised, human-labeled OSCD benchmark and a separate exploratory vegetation-to-built-up study in Bengaluru and Kochi.
 
-## Research question
+## Current priority: supervised OSCD benchmark
 
-How reliably can a compact two-date deep learning model detect vegetation-to-built-up transitions in a city it has not seen during training, compared with spectral and land-cover-map baselines?
+We trained two compact paired-image networks on the Onera Satellite Change Detection dataset using ten cities for fitting, four for validation, and ten official test cities for evaluation. The fixed six-band change-vector baseline scored test F1 **0.357**, the early-fusion U-Net **0.414**, and the shared-encoder Siamese U-Net **0.468**. The Siamese network improved recall but raised false positives; city-level performance varied widely. See [data and run instructions](docs/oscd_benchmark.md), [complete results](docs/oscd_results.md), and the [working OSCD manuscript](paper/oscd_manuscript_draft.md).
 
-The output is a 10 m land-cover change estimate, **not** individual building detection, legal encroachment evidence, a precise conversion date, or a claim of universal transfer.
+OSCD labels general urban change, including new roads and buildings. It does not label the exact vegetation-to-built-up transition. The earlier Bengaluru/Kochi weak-supervision work remains documented in [its working manuscript](paper/manuscript_draft.md), with its limitations stated there. Neither draft is submission ready.
 
-## Status
-
-**Phase 1 complete. North Bengaluru Phase 2 data validated:** paired v3 Sentinel-2 composites, per-pixel valid observation counts, and scene CSVs have passed spatial, band, variation and provenance checks. The source rasters stay outside Git. Kochi is the candidate external test area, with imagery to be acquired before the transfer experiment. See the [validated data record](docs/phase2_validated_data.md) and [catalog notes](docs/phase2_catalog.md).
-
-**Phase 3 started:** a spectral candidate baseline and an independent annotation protocol are available. Kochi replaces Pune as the candidate external city. The baseline has no accuracy claim until human-checked reference labels exist. See the [label protocol](docs/phase3_labels.md).
-
-**First model checkpoint:** a compact two-date U-Net has trained on conservative Dynamic World weak labels. The geographically separate weak-label check confirms that the training pipeline runs, but it is not independent accuracy evidence. See the [model checkpoint record](docs/phase4_weak_model.md).
-
-**Independent evaluation in preparation:** a blind, one-location-at-a-time review page samples 48 points from held-out Bengaluru blocks. The reviewer assigns separate 2018 and 2025 classes. Kochi has a separate imagery export script and remains untouched by model tuning. See the [reference protocol](docs/independent_reference_protocol.md).
-
-**Initial independent check:** 27 Bengaluru points met the medium/high-confidence rule, with only three target transitions. Both fixed methods had many false positives on this small challenge sample. Kochi rasters passed data checks and a frozen-model diagnostic is available; its independent review is pending. See [initial evaluation](docs/phase5_initial_evaluation.md).
-
-## Roadmap
+## Earlier vegetation-to-built-up roadmap
 
 1. **Setup:** repository, configuration, data protocol, validation command.
 2. **Data:** select matched seasonal Sentinel-2 Level-2A composites; inspect candidate test cities; export aligned rasters.
