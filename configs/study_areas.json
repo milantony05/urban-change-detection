@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "crs": "EPSG:4326",
+  "areas": [
+    {
+      "id": "north_bengaluru",
+      "role": "development",
+      "bbox": [
+        77.48,
+        13.04,
+        77.75,
+        13.22
+      ],
+      "periods": [
+        {
+          "start": "2018-01-01",
+          "end": "2018-03-31"
+        },
+        {
+          "start": "2025-01-01",
+          "end": "2025-03-31"
+        }
+      ],
+      "status": "candidate",
+      "notes": "Illustrative AOI and dry-season windows; inspect imagery and adjust before acquisition. Hold out spatial blocks within the AOI."
+    },
+    {
+      "id": "independent_city",
+      "role": "external_test",
+      "bbox": null,
+      "periods": [],
+      "status": "to_select",
+      "notes": "Choose after checking cloud-free imagery, visible changes, and independent reference-label feasibility. Never use for training or threshold tuning."
+    }
+  ]
+}
