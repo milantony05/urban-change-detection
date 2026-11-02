@@ -21,6 +21,7 @@ The Siamese model's three-seed mean F1 was 0.412 with the original loss and samp
 - Open [the interactive dashboard](dashboard/index.html) after downloading or cloning the repository. It is a self-contained HTML file and works offline; select a city and model to inspect F1 and confusion counts.
 - Open [the Jupyter showcase notebook](notebooks/oscd_showcase.ipynb) on GitHub to see its saved figures and narrative. To run the cells locally, install `requirements-research.txt`, launch `jupyter lab` from the repository root, and open the notebook.
 - The dashboard is generated from committed metrics with `python -m scripts.build_dashboard`; the notebook is generated with `python -m scripts.build_showcase_notebook`. Neither requires retraining.
+- The [saved test metrics](artifacts/README.md) are included for review. The larger `data/` and runtime `outputs/` directories are created locally by scripts and do not appear in Git.
 
 ## Reproduce
 
@@ -30,7 +31,7 @@ Install Python 3.10 or later and dependencies:
 pip install -r requirements-research.txt
 ```
 
-Download OSCD Images, Train Labels and Test Labels from the [author's page](https://rcdaudt.github.io/oscd/) and extract the three top-level folders under `data/oscd/`. The supplied split image archives can be extracted to the same folder. Keep data and checkpoints outside Git.
+Download OSCD Images, Train Labels and Test Labels from the [author's page](https://rcdaudt.github.io/oscd/) and extract the three top-level folders under `data/oscd/`. The supplied split image archives can be extracted to the same folder. Keep source imagery and trained checkpoints outside Git; rerunning the scripts regenerates them locally.
 
 ```bash
 python -m scripts.prepare_oscd --root data/oscd --out data/oscd_chips
@@ -48,8 +49,9 @@ Read each model's `outputs/.../test_metrics.json`. For the repeated-seed command
 - `scripts/prepare_oscd.py`, `train_oscd.py`, `oscd_baseline.py`: data and evaluation pipeline.
 - `scripts/report_oscd_city.py`, `plot_oscd_city.py`, `make_oscd_demo.py`: analysis and figures.
 - `paper/`: manuscript drafts, figures and per-city metrics.
-- `docs/`: data provenance, methods, results and limitations.
-- `data/`, `outputs/`: local ignored datasets and checkpoints.
+- [`docs/`](docs/README.md): current-project links and earlier-pilot provenance.
+- `artifacts/`: small tracked metric summaries and an explanation of generated outputs.
+- `data/`, `outputs/`: local ignored datasets and generated runtime files; scripts create them as needed.
 
 The earlier Bengaluru/Kochi [vegetation-to-built-up pilot](paper/manuscript_draft.md) remains documented separately. It used Dynamic World weak labels and a small independent review; it is not the supervised OSCD benchmark.
 
