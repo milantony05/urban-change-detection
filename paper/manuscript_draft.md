@@ -48,6 +48,10 @@ Against weak labels, the first U-Net checkpoint reached validation F1 0.650, but
 
 In Kochi's independent review, 38 of 48 points met the clear-class and medium/high-confidence criteria; 21 were labeled vegetation-to-built-up. On this prediction-stratified challenge sample, the spectral rule recorded TP=16, FP=3, FN=5, TN=14 (precision 0.842, recall 0.762, F1 0.800). The frozen U-Net recorded TP=13, FP=5, FN=8, TN=12 (precision 0.722, recall 0.619, F1 0.667). For the 23 high-confidence points alone, the spectral rule recorded TP=12, FP=1, FN=2, TN=8, and the U-Net TP=9, FP=1, FN=5. These descriptive challenge-set scores favor the spectral rule, but sample selection prevents an area-wide accuracy interpretation. Several locations need adjudication, including a vegetation-to-bare-soil square described as quarry-like and a stadium grass square labeled built-up in both dates. The source CSV checksum and detailed breakdown are in `docs/phase5_kochi_reference.md`.
 
+![Counts from the independent reference challenge samples](figures/reference_comparison.svg)
+
+**Figure 1.** True positives, false positives and false negatives for the fixed methods in each city's prediction-stratified review. Different target counts and selected sampling strata prevent reading these bars as citywide accuracy or conversion rates.
+
 ## 4. Discussion and limitations
 
 The principal observation is that a favorable weak-label score did not translate into a credible full-area map. Sparse positive labels, incomplete hard negatives and differences between cities can cause broad extrapolation. The independent Bengaluru sample shows that both methods flag many non-target locations. Kochi's selected reference points favor the simple spectral rule over the frozen U-Net. This is evidence against claiming a deep-learning performance improvement on the present evaluation, although it does not establish population performance.
