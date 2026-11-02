@@ -10,7 +10,7 @@ The output is a 10 m land-cover change estimate, **not** individual building det
 
 ## Status
 
-**Phase 1 complete. Phase 2 in progress:** public scene inventory is reproducible for North Bengaluru and candidate external-test city Pune. Pixel access, AOI cloud checks, composite selection and georeferenced raster exports remain to be done. No satellite data or trained model is included yet. See [Phase 2 catalog notes](docs/phase2_catalog.md).
+**Phase 1 complete. Phase 2 in progress:** public scene inventory is reproducible for North Bengaluru and candidate external-test city Pune. Pilot North Bengaluru composites for 2018 and 2025 passed grid, band and visual checks. Revised final exports with validity counts and scene manifests are pending. No satellite data or trained model is included in Git. See [catalog notes](docs/phase2_catalog.md) and the [pilot inspection](docs/phase2_pilot_inspection.md).
 
 ## Roadmap
 
@@ -37,7 +37,14 @@ python -m urban_change.config --config configs/study_areas.json
 python -m urban_change.catalog --config configs/study_areas.json --output data/catalog_manifest.json
 ```
 
-Later phases will add pinned geospatial and PyTorch dependencies in a separate environment file after the data source and compute environment are confirmed.
+Inspect local GEE exports with:
+
+```bash
+pip install -r requirements-geospatial.txt
+python scripts/inspect_rasters.py path/to/2018.tif path/to/2025.tif
+```
+
+The reproducible GEE export is in `gee/export_composites.js`.
 
 ## Layout
 
