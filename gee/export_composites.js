@@ -24,7 +24,9 @@ function exportPeriod(start, end, label) {
     .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 40));
 
   var clear = raw.map(maskSentinel2);
-  var validCount = clear.select('B2').count().rename('valid_count').toUint8();
+  // GeoTIFF export requires every band in this image to use a compatible type.
+  // Scene counts are small, but UInt16 matches the reflectance bands.
+  var validCount = clear.select('B2').count().rename('valid_count').toUint16();
   var reflectance = clear.median()
     .resample('bilinear')
     .round().toUint16();
