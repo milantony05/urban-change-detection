@@ -25,13 +25,13 @@
       "notes": "Illustrative AOI and dry-season windows; inspect imagery and adjust before acquisition. Hold out spatial blocks within the AOI."
     },
     {
-      "id": "pune",
+      "id": "kochi",
       "role": "external_test",
       "bbox": [
-        73.72,
-        18.43,
-        74.03,
-        18.67
+        76.20,
+        9.88,
+        76.42,
+        10.10
       ],
       "periods": [
         {
@@ -44,7 +44,7 @@
         }
       ],
       "status": "candidate",
-      "notes": "Candidate external test AOI. Catalog inspection only; do not inspect change labels or tune model using this city. Confirm AOI imagery and annotation feasibility before locking split."
+      "notes": "Candidate external test AOI selected for the student's home city. Catalog inspection only; confirm AOI cloud coverage and annotation feasibility. Coastal water and wetlands are potential transfer challenges. Do not inspect change labels or tune the model using this city."
     }
   ]
 }
