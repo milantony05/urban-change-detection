@@ -9,7 +9,6 @@ from pathlib import Path
 
 import numpy as np
 import rasterio
-from PIL import Image
 
 BANDS = ('B02', 'B03', 'B04', 'B08', 'B11', 'B12')
 
@@ -27,13 +26,16 @@ def read_city(folder, mask_path):
         if len({a.shape for a in channels}) != 1:
             raise ValueError(f'Bands in {folder} are not aligned')
         dates.append(np.stack(channels))
-    mask = np.asarray(Image.open(mask_path).convert('L'))
+    with rasterio.open(mask_path) as ds:
+        mask = ds.read(1)
     if dates[0].shape != dates[1].shape or mask.shape != dates[0].shape[1:]:
         raise ValueError(f'Image or mask shape differs in {folder.name}')
+    if not set(np.unique(mask)) <= {1, 2}:
+        raise ValueError(f'Unexpected label values in {mask_path}')
     image = np.concatenate(dates) / 10000.0
     if not np.isfinite(image).all():
         raise ValueError(f'Nonfinite reflectance in {folder.name}')
-    return image.astype('float32'), (mask > 0).astype('uint8') + 1
+    return image.astype('float32'), mask.astype('uint8')
 
 
 def main():
@@ -56,7 +58,7 @@ def main():
     for city in train_cities + test_cities:
         split = 'test' if city in test_cities else ('val' if city in val_cities else 'train')
         labels = test_labels if split == 'test' else train_labels
-        image, mask = read_city(images / city, labels / city / 'cm' / 'cm.png')
+        image, mask = read_city(images / city, labels / city / 'cm' / f'{city}-cm.tif')
         height, width = mask.shape
         for y in range(0, height - args.chip + 1, args.chip):
             for x in range(0, width - args.chip + 1, args.chip):
