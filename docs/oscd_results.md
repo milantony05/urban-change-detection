@@ -6,10 +6,11 @@ Both PyTorch models used eight epochs, batch size 16, Adam 0.001, positive-pixel
 
 | Architecture | Selected epoch | Test TP | FP | FN | TN | Precision | Recall | F1 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Six-band RMS change vector | Threshold 0.0788 | 60,987 | 134,434 | 85,038 | 2,435,189 | 0.312 | 0.418 | 0.357 |
 | Two-date U-Net | 5 | 44,492 | 24,592 | 101,533 | 2,545,031 | 0.644 | 0.305 | 0.414 |
 | Shared-encoder Siamese U-Net | 7 | 81,204 | 119,657 | 64,821 | 2,449,966 | 0.404 | 0.556 | 0.468 |
 
-The Siamese network detects more of the annotated changes but produces many more false positives. Pooled F1 alone hides large geographic variation:
+The baseline uses the root-mean-square spectral difference across all six bands, with a threshold selected from 60 values in [0.01, 0.30] by validation F1 alone. Its validation F1 was 0.172. Both networks outperform it in pooled test F1. The Siamese network detects more of the annotated changes than the early-fusion network but produces many more false positives. Pooled F1 alone hides large geographic variation:
 
 | Official test city | U-Net F1 | Siamese F1 |
 | --- | ---: | ---: |
@@ -32,4 +33,5 @@ Reproduce from the extracted official folders:
 python -m scripts.prepare_oscd --root data/oscd --out data/oscd_chips
 python -m scripts.train_oscd --chips data/oscd_chips --out outputs/oscd_model --epochs 8 --batch-size 16
 python -m scripts.train_oscd --chips data/oscd_chips --out outputs/oscd_siamese --architecture siamese --epochs 8 --batch-size 16
+python -m scripts.oscd_baseline --chips data/oscd_chips
 ```
