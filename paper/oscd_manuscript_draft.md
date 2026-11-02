@@ -1,0 +1,34 @@
+# City-held-out Sentinel-2 urban change detection with compact paired convolutional networks: an OSCD benchmark
+
+**Working draft, 2 November 2026.** The existing vegetation-to-built-up manuscript remains a separate exploratory study. This draft is not submission ready; the benchmark comparison was exploratory and requires stronger baselines and repeated runs.
+
+## Abstract
+
+Generalization across cities is a central difficulty in detecting urban change from bi-temporal satellite imagery. We compared a compact early-fusion U-Net with a shared-encoder Siamese U-Net on the human annotated Onera Satellite Change Detection (OSCD) dataset. Six co-registered Sentinel-2 bands from each date were converted into 64 × 64 chips; ten original training cities were used for fitting, four for validation, and the ten official test cities for evaluation. Checkpoints were chosen by validation F1 without using test labels for fitting or threshold tuning. On the ten test cities, the early-fusion U-Net reached precision 0.644, recall 0.305 and F1 0.414; the Siamese model reached precision 0.404, recall 0.556 and F1 0.468. Performance varied sharply by location: the Siamese F1 ranged from 0.019 in Valencia to 0.736 in Montpellier. The paired model improved pooled recall but added false positives, underscoring the need for city-specific evaluation. Further baselines, repeated seeds and error analysis are required before a journal claim.
+
+## 1. Problem and contribution under development
+
+OSCD supplies manually annotated urban change (including buildings and roads) across 24 Sentinel-2 image pairs from multiple regions [1]. This paper asks whether a compact shared-encoder two-date model improves city-held-out change detection over an early-fusion U-Net, and how reliably either transfers across cities. The current result is a reproducible pilot comparison, not a novel architecture claim. Its contribution must be sharpened through a controlled cross-city analysis and a credible classical baseline.
+
+## 2. Data and methods
+
+The 14 original OSCD training cities were sorted by name. Every fourth city (`abudhabi`, `bercy`, `mumbai`, `rennes`) was assigned to validation before any image or label inspection for model selection. The other ten trained the models. All ten official OSCD test cities remained separate. We used B02, B03, B04, B08, B11 and B12 in each date, divided by 10,000, and a non-overlapping 64-pixel chip grid. Incomplete image-edge chips were omitted. The original TIFF masks encode no change as 1 and change as 2. Exact data preparation and city list are in the repository.
+
+The early-fusion U-Net takes twelve bands jointly. The Siamese U-Net uses a shared encoder for the two dates, computes NDVI and NDBI internally, and fuses features from both dates and their absolute differences at three scales. Both were trained for eight epochs with Adam (learning rate 0.001), batch size 16, positive pixel loss weight 5 and positive-containing chip sampler weight 3. A fixed probability threshold of 0.5 was used. The selected checkpoint maximized validation F1, and test confusion counts were micro-aggregated over included chips. Code and complete run commands are in `docs/oscd_results.md`.
+
+## 3. Preliminary results
+
+| Model | TP | FP | FN | TN | Precision | Recall | F1 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Early-fusion U-Net | 44,492 | 24,592 | 101,533 | 2,545,031 | 0.644 | 0.305 | 0.414 |
+| Shared-encoder Siamese U-Net | 81,204 | 119,657 | 64,821 | 2,449,966 | 0.404 | 0.556 | 0.468 |
+
+The Siamese model gained 0.054 pooled F1 and 0.251 recall, while precision declined by 0.240. It outscored early fusion in eight of ten test cities, but both performed poorly in Valencia. The range and per-city scores are recorded in `docs/oscd_results.md`. These differences are descriptive; statistical uncertainty has not been assessed.
+
+## 4. Limitations and next experiments
+
+Model families were compared after an exploratory first test result had already been viewed. The test labels did not enter gradient updates, but this sequence limits claims about a wholly untouched model-selection protocol. A final paper should predefine the compared models and report repeated random seeds, a simple spectral-change or change-vector baseline selected only on validation cities, per-city precision/recall and error examples. The OSCD binary mask does not distinguish vegetation-to-built-up from other urban change, and direct prediction on Bengaluru or Kochi composites would be qualitative transfer rather than validated performance on the same label definition. OSCD imagery and our Google Earth Engine seasonal composites may differ in acquisition and processing. No claim about publication tier or superiority over published methods follows from this pilot.
+
+## Reference
+
+1. Daudt, R. C., Le Saux, B., Boulch, A., & Gousseau, Y. (2018). [Urban Change Detection for Multispectral Earth Observation Using Convolutional Neural Networks](https://doi.org/10.1109/IGARSS.2018.8518015). *IEEE International Geoscience and Remote Sensing Symposium*, 2115–2118. Official dataset: https://rcdaudt.github.io/oscd/.
