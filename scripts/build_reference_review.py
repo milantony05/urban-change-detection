@@ -33,19 +33,25 @@ def picture(bands, y, x, radius, size):
 
 def main():
     p = argparse.ArgumentParser(description=__doc__)
-    for name in ('before', 'after', 'spectral', 'model', 'weak'):
+    for name in ('before', 'after', 'spectral', 'model'):
         p.add_argument('--' + name, type=Path, required=True)
+    p.add_argument('--weak', type=Path)
+    p.add_argument('--all-blocks', action='store_true', help='Use for a city never used in training')
+    p.add_argument('--city', default='North Bengaluru')
     p.add_argument('--out', type=Path, required=True)
     p.add_argument('--per-stratum', type=int, default=12)
     args = p.parse_args()
-    paths = [args.before, args.after, args.spectral, args.model, args.weak]
+    paths = [args.before, args.after, args.spectral, args.model]
+    if args.weak:
+        paths.append(args.weak)
     opened = [rasterio.open(path) for path in paths]
     try:
         grids = {(ds.crs, ds.transform, ds.shape) for ds in opened}
         if len(grids) != 1:
             raise ValueError('All input rasters must have exactly the same grid')
         before, after = opened[0].read(), opened[1].read()
-        spectral, model, weak = opened[2].read(1), opened[3].read(1), opened[4].read(1)
+        spectral, model = opened[2].read(1), opened[3].read(1)
+        weak = opened[4].read(1) if args.weak else None
         height, width = spectral.shape
         rng = np.random.default_rng(20261102)
         seen_blocks = set()
@@ -56,7 +62,7 @@ def main():
             for by in range(0, height-100+1, 100):
                 for bx in range(0, width-100+1, 100):
                     block_id = (by//100, bx//100)
-                    if split_for_block(*block_id, 20261102) != 'test_weak':
+                    if not args.all_blocks and split_for_block(*block_id, 20261102) != 'test_weak':
                         continue
                     local = (before[6, by:by+100, bx:bx+100] >= 2) & (after[6, by:by+100, bx:bx+100] >= 2)
                     a = spectral[by:by+100, bx:bx+100] == 2
@@ -64,7 +70,10 @@ def main():
                     if group == 'both': local &= a & b
                     elif group == 'model_only': local &= b & ~a
                     elif group == 'spectral_only': local &= a & ~b
-                    else: local &= ~a & ~b & (weak[by:by+100, bx:bx+100] == 1)
+                    else:
+                        local &= ~a & ~b
+                        if weak is not None:
+                            local &= weak[by:by+100, bx:bx+100] == 1
                     positions = np.argwhere(local)
                     if len(positions):
                         rng.shuffle(positions)
@@ -92,6 +101,7 @@ def main():
             raise ValueError('No eligible locations found')
         template = Path(__file__).with_name('reference_review_template.html').read_text()
         html = template.replace('/*DATA_PLACEHOLDER*/[]', json.dumps(items, separators=(',', ':')))
+        html = html.replace('North Bengaluru land-cover review', args.city + ' land-cover review')
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(html, encoding='utf-8')
         print('Review items:', len(items), {g: sum(i['group']==g for i in items) for g in groups})
