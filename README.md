@@ -10,7 +10,9 @@ The output is a 10 m land-cover change estimate, **not** individual building det
 
 ## Status
 
-**Phase 1 complete. North Bengaluru Phase 2 data validated:** paired v3 Sentinel-2 composites, per-pixel valid observation counts, and scene CSVs have passed spatial, band, variation and provenance checks. The source rasters stay outside Git. Pune remains a candidate external test area, with imagery to be acquired before the transfer experiment. See the [validated data record](docs/phase2_validated_data.md) and [catalog notes](docs/phase2_catalog.md).
+**Phase 1 complete. North Bengaluru Phase 2 data validated:** paired v3 Sentinel-2 composites, per-pixel valid observation counts, and scene CSVs have passed spatial, band, variation and provenance checks. The source rasters stay outside Git. Kochi is the candidate external test area, with imagery to be acquired before the transfer experiment. See the [validated data record](docs/phase2_validated_data.md) and [catalog notes](docs/phase2_catalog.md).
+
+**Phase 3 started:** a spectral candidate baseline and an independent annotation protocol are available. Kochi replaces Pune as the candidate external city. The baseline has no accuracy claim until human-checked reference labels exist. See the [label protocol](docs/phase3_labels.md).
 
 ## Roadmap
 
