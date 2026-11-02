@@ -10,7 +10,7 @@ The output is a 10 m land-cover change estimate, **not** individual building det
 
 ## Status
 
-**Phase 1 complete:** project structure, reproducible environment, study-area configuration, and data protocol. No satellite data or trained model is included yet.
+**Phase 1 complete. Phase 2 in progress:** public scene inventory is reproducible for North Bengaluru and candidate external-test city Pune. Pixel access, AOI cloud checks, composite selection and georeferenced raster exports remain to be done. No satellite data or trained model is included yet. See [Phase 2 catalog notes](docs/phase2_catalog.md).
 
 ## Roadmap
 
@@ -34,6 +34,7 @@ python -m venv .venv
 # Linux/macOS: source .venv/bin/activate
 # Windows PowerShell: .venv\Scripts\Activate.ps1
 python -m urban_change.config --config configs/study_areas.json
+python -m urban_change.catalog --config configs/study_areas.json --output data/catalog_manifest.json
 ```
 
 Later phases will add pinned geospatial and PyTorch dependencies in a separate environment file after the data source and compute environment are confirmed.
