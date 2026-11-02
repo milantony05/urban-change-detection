@@ -1,6 +1,7 @@
 # City-held-out Sentinel-2 urban change detection with compact paired convolutional networks: an OSCD benchmark
 
-**Working draft, 2 November 2026.** The existing vegetation-to-built-up manuscript remains a separate exploratory study. This draft is not submission ready; the benchmark comparison was exploratory and requires stronger baselines and repeated runs.
+**Working draft, 2 November 2026.** The existing vegetation-to-built-up manuscript remains a separate exploratory study. This draft is not submission ready; the benchmark comparison remains exploratory and requires an independent confirmatory design and deeper error analysis.
+The Siamese weight-sensitivity analysis now includes three seeds, but it was designed after viewing the initial test result and remains exploratory.
 
 ## Abstract
 
@@ -26,9 +27,13 @@ The early-fusion U-Net takes twelve bands jointly. The Siamese U-Net uses a shar
 
 The Siamese model gained 0.054 pooled F1 and 0.251 recall, while precision declined by 0.240. It outscored early fusion in eight of ten test cities, but both performed poorly in Valencia. The range and per-city scores are recorded in `docs/oscd_results.md`. These differences are descriptive; statistical uncertainty has not been assessed.
 
+### Exploratory loss and sampling sensitivity
+
+The first Siamese test motivated a second setting with positive pixel weight reduced from 5 to 2 and positive-chip sampler weight reduced from 3 to 1. Three seeds (20261102–20261104) were run for each setting. Original Siamese F1 values were 0.468, 0.377 and 0.389 (mean 0.412, sample SD 0.049); conservative F1 values were 0.403, 0.476 and 0.445 (mean 0.441, SD 0.036). Mean precision increased from 0.331 to 0.444, while mean recall decreased from 0.570 to 0.447. The F1 ordering reversed for one of three paired seeds. The observed precision-recall tradeoff is more consistent than the small mean F1 difference. Because both settings and additional runs were considered after the first test result, the test set cannot support a fresh confirmatory model-selection claim. Full settings and results are in `docs/oscd_weight_sensitivity.md`.
+
 ## 4. Limitations and next experiments
 
-Model families were compared after an exploratory first test result had already been viewed. The test labels did not enter gradient updates, but this sequence limits claims about a wholly untouched model-selection protocol. A final paper should predefine the compared models and report repeated random seeds, a simple spectral-change or change-vector baseline selected only on validation cities, per-city precision/recall and error examples. The OSCD binary mask does not distinguish vegetation-to-built-up from other urban change, and direct prediction on Bengaluru or Kochi composites would be qualitative transfer rather than validated performance on the same label definition. OSCD imagery and our Google Earth Engine seasonal composites may differ in acquisition and processing. No claim about publication tier or superiority over published methods follows from this pilot.
+Model families and weight settings were compared after an exploratory first test result had already been viewed. The test labels did not enter gradient updates, but this sequence limits claims about wholly untouched model selection. A final paper should predefine comparisons on a new external holdout and report repeated seeds, per-city precision/recall, uncertainty and error examples. The OSCD binary mask does not distinguish vegetation-to-built-up from other urban change, and direct prediction on Bengaluru or Kochi composites would be qualitative transfer rather than validated performance on the same label definition. OSCD imagery and our Google Earth Engine seasonal composites may differ in acquisition and processing. No claim about publication tier or superiority over published methods follows from this pilot.
 
 ## Reference
 
