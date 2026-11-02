@@ -31,6 +31,14 @@ The Siamese model gained 0.054 pooled F1 and 0.251 recall, while precision decli
 
 The first Siamese test motivated a second setting with positive pixel weight reduced from 5 to 2 and positive-chip sampler weight reduced from 3 to 1. Three seeds (20261102–20261104) were run for each setting. Original Siamese F1 values were 0.468, 0.377 and 0.389 (mean 0.412, sample SD 0.049); conservative F1 values were 0.403, 0.476 and 0.445 (mean 0.441, SD 0.036). Mean precision increased from 0.331 to 0.444, while mean recall decreased from 0.570 to 0.447. The F1 ordering reversed for one of three paired seeds. The observed precision-recall tradeoff is more consistent than the small mean F1 difference. Because both settings and additional runs were considered after the first test result, the test set cannot support a fresh confirmatory model-selection claim. Full settings and results are in `docs/oscd_weight_sensitivity.md`.
 
+### City-level errors
+
+![OSCD held-out city F1 by model and setting](figures/oscd_city_f1.svg)
+
+**Figure 1.** Per-city F1 for a validation-tuned change-vector rule, an early-fusion U-Net (one seed), and each Siamese setting (mean of three seeds). The parenthesized percentage is the annotated change fraction in the evaluated chips. The diagram reports exploratory test-set analysis and does not establish an independently confirmed ranking.
+
+The conservative Siamese setting averaged F1 0.732 in Montpellier and 0.699 in Las Vegas but only 0.016 in Valencia. Valencia has 0.37% annotated change in its evaluated chips, and the original Siamese model produced many false positives there. The result suggests that sparse changes can be a difficult operating regime; scene characteristics and label structure may also contribute, so prevalence alone should not be asserted as the cause. Chongqing shows the opposite tradeoff: the original setting averaged F1 0.556 and the conservative setting 0.349. These cases motivate separate analysis of false alarms, missed change, and shift in land-cover appearance across cities.
+
 ## 4. Limitations and next experiments
 
 Model families and weight settings were compared after an exploratory first test result had already been viewed. The test labels did not enter gradient updates, but this sequence limits claims about wholly untouched model selection. A final paper should predefine comparisons on a new external holdout and report repeated seeds, per-city precision/recall, uncertainty and error examples. The OSCD binary mask does not distinguish vegetation-to-built-up from other urban change, and direct prediction on Bengaluru or Kochi composites would be qualitative transfer rather than validated performance on the same label definition. OSCD imagery and our Google Earth Engine seasonal composites may differ in acquisition and processing. No claim about publication tier or superiority over published methods follows from this pilot.
