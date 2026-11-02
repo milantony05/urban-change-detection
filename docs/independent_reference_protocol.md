@@ -1,0 +1,9 @@
+# Independent reference batch 01
+
+The review page shows 48 locations, all in geographic blocks assigned to `test_weak` by the fixed seed. There are 12 locations each where both the spectral and U-Net methods flag a pixel, only the model flags it, only the spectral method flags it, or neither flags it. The stratum is hidden while annotating. One point is chosen per 1 km block, so the points are spatially spread. This is a **stratified sample**, not a random survey of area; raw positive fractions from it are not a conversion-area estimate.
+
+The user sees 2018 and 2025 context and close views of the same 10 m square, outlined in yellow. They independently choose `Vegetation`, `Built-up`, `Water`, `Bare soil`, `Other`, or `Unclear` for each date, then rate confidence. The target reference positive is `Vegetation` in 2018 and `Built-up` in 2025, with sufficient confidence. `Unclear` and low confidence should be excluded or adjudicated using independent date-appropriate higher-resolution imagery. Bare earth or plot lines alone are not built-up. Wet fields and mixed pixels should be marked unclear.
+
+The page is self-contained and saves progress in the local browser. The reviewer downloads a CSV and returns it. The CSV includes the hidden sampling stratum for analysis after submission. This is a first independent reference batch, and its small size limits any journal claim. For a paper, enlarge the reference set, seek a second reviewer on disagreements, document visual evidence, report per-stratum errors, and evaluate Kochi after model selection is frozen.
+
+To rebuild, run `python -m scripts.build_reference_review` with the five aligned raster arguments shown by `--help`. The page embeds rendered JPEG views, not the source GeoTIFFs. Keep the source imagery and model output outside Git.
