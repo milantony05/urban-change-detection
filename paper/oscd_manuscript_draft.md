@@ -4,7 +4,7 @@
 
 ## Abstract
 
-Generalization across cities is a central difficulty in detecting urban change from bi-temporal satellite imagery. We compared a compact early-fusion U-Net with a shared-encoder Siamese U-Net on the human annotated Onera Satellite Change Detection (OSCD) dataset. Six co-registered Sentinel-2 bands from each date were converted into 64 × 64 chips; ten original training cities were used for fitting, four for validation, and the ten official test cities for evaluation. Checkpoints were chosen by validation F1 without using test labels for fitting or threshold tuning. On the ten test cities, the early-fusion U-Net reached precision 0.644, recall 0.305 and F1 0.414; the Siamese model reached precision 0.404, recall 0.556 and F1 0.468. Performance varied sharply by location: the Siamese F1 ranged from 0.019 in Valencia to 0.736 in Montpellier. The paired model improved pooled recall but added false positives, underscoring the need for city-specific evaluation. Further baselines, repeated seeds and error analysis are required before a journal claim.
+Generalization across cities is a central difficulty in detecting urban change from bi-temporal satellite imagery. We compared a compact early-fusion U-Net and a shared-encoder Siamese U-Net with a validation-tuned six-band change-vector baseline on the human annotated Onera Satellite Change Detection (OSCD) dataset. Six co-registered Sentinel-2 bands from each date were converted into 64 × 64 chips; ten original training cities were used for fitting, four for validation, and the ten official test cities for evaluation. Checkpoints and the baseline threshold were chosen on validation cities. On the ten test cities, the change-vector baseline reached F1 0.357, the early-fusion U-Net F1 0.414, and the Siamese model F1 0.468. The Siamese network reached recall 0.556 and precision 0.404; its F1 ranged from 0.019 in Valencia to 0.736 in Montpellier. The paired model improved pooled recall but added false positives, underscoring the need for city-specific evaluation. Repeated seeds and error analysis are required before a journal claim.
 
 ## 1. Problem and contribution under development
 
@@ -14,12 +14,13 @@ OSCD supplies manually annotated urban change (including buildings and roads) ac
 
 The 14 original OSCD training cities were sorted by name. Every fourth city (`abudhabi`, `bercy`, `mumbai`, `rennes`) was assigned to validation before any image or label inspection for model selection. The other ten trained the models. All ten official OSCD test cities remained separate. We used B02, B03, B04, B08, B11 and B12 in each date, divided by 10,000, and a non-overlapping 64-pixel chip grid. Incomplete image-edge chips were omitted. The original TIFF masks encode no change as 1 and change as 2. Exact data preparation and city list are in the repository.
 
-The early-fusion U-Net takes twelve bands jointly. The Siamese U-Net uses a shared encoder for the two dates, computes NDVI and NDBI internally, and fuses features from both dates and their absolute differences at three scales. Both were trained for eight epochs with Adam (learning rate 0.001), batch size 16, positive pixel loss weight 5 and positive-containing chip sampler weight 3. A fixed probability threshold of 0.5 was used. The selected checkpoint maximized validation F1, and test confusion counts were micro-aggregated over included chips. Code and complete run commands are in `docs/oscd_results.md`.
+The early-fusion U-Net takes twelve bands jointly. The Siamese U-Net uses a shared encoder for the two dates, computes NDVI and NDBI internally, and fuses features from both dates and their absolute differences at three scales. Both were trained for eight epochs with Adam (learning rate 0.001), batch size 16, positive pixel loss weight 5 and positive-containing chip sampler weight 3. A fixed probability threshold of 0.5 was used. The selected checkpoint maximized validation F1. A simple comparator computed the root-mean-square band difference between dates and selected its threshold from 60 values spanning 0.01–0.30 by validation F1. Test confusion counts were micro-aggregated over included chips. Code and complete run commands are in `docs/oscd_results.md`.
 
 ## 3. Preliminary results
 
 | Model | TP | FP | FN | TN | Precision | Recall | F1 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Change-vector baseline | 60,987 | 134,434 | 85,038 | 2,435,189 | 0.312 | 0.418 | 0.357 |
 | Early-fusion U-Net | 44,492 | 24,592 | 101,533 | 2,545,031 | 0.644 | 0.305 | 0.414 |
 | Shared-encoder Siamese U-Net | 81,204 | 119,657 | 64,821 | 2,449,966 | 0.404 | 0.556 | 0.468 |
 
