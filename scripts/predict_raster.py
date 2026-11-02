@@ -6,7 +6,7 @@ import numpy as np
 import rasterio
 import torch
 
-from urban_change.model import SmallUNet
+from urban_change.model import SmallUNet, SiameseUNet
 
 
 def main():
@@ -19,7 +19,7 @@ def main():
     args = parser.parse_args()
     torch.set_num_threads(min(torch.get_num_threads(), 4))
     checkpoint = torch.load(args.checkpoint, map_location='cpu', weights_only=False)
-    model = SmallUNet()
+    model = SiameseUNet() if checkpoint.get('architecture', 'unet') == 'siamese' else SmallUNet()
     model.load_state_dict(checkpoint['model'])
     model.eval()
     with rasterio.open(args.before) as before, rasterio.open(args.after) as after:
@@ -49,7 +49,7 @@ def main():
     args.out.parent.mkdir(parents=True, exist_ok=True)
     with rasterio.open(args.out, 'w', **profile) as dst:
         dst.write(probability, 1)
-        dst.set_band_description(1, 'weak_model_probability')
+        dst.set_band_description(1, checkpoint.get('architecture', 'unet') + '_probability')
         dst.update_tags(warning='Exploratory probability; no independent accuracy validation',
                         checkpoint_epoch=checkpoint['epoch'], min_valid=args.min_valid)
     print(f'Wrote {args.out}; valid pixels: {good.sum():,}; '
