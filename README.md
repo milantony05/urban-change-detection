@@ -18,6 +18,8 @@ The output is a 10 m land-cover change estimate, **not** individual building det
 
 **Independent evaluation in preparation:** a blind, one-location-at-a-time review page samples 48 points from held-out Bengaluru blocks. The reviewer assigns separate 2018 and 2025 classes. Kochi has a separate imagery export script and remains untouched by model tuning. See the [reference protocol](docs/independent_reference_protocol.md).
 
+**Initial independent check:** 27 Bengaluru points met the medium/high-confidence rule, with only three target transitions. Both fixed methods had many false positives on this small challenge sample. Kochi rasters passed data checks and a frozen-model diagnostic is available; its independent review is pending. See [initial evaluation](docs/phase5_initial_evaluation.md).
+
 ## Roadmap
 
 1. **Setup:** repository, configuration, data protocol, validation command.
