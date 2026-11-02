@@ -1,9 +1,11 @@
 # Review reconciliation and label meaning
 
-The second round returned eight clarifications. Three changed from `other_change` to `change`; three changed from `other_change` to `no_change`; one remained `other_change` (submitted as `other_changes`); and one remained `change` while describing lake-to-land. The revised cards marked the sampled location in both dates.
+The revised second-round CSV supersedes the earlier one. Two changed from `other_change` to `change`; five changed from `other_change` to `no_change`; and one remained `change` while describing lake-to-land. The revised cards marked the sampled location in both dates. The user's interpretation reflects the broad scene, so these remain contextual reviews rather than target-class truth.
 
 The complete 24-item review is retained as **contextual review**, not an independent pixel-level test set. A lake-to-land transition is outside the vegetation-to-built-up target. Plot lines, visible urbanization near a marker, or a broad change across a card do not prove the sampled 10 m pixel's source and destination classes. The first round also had a marker-position error. No precision or recall is reported from these labels.
 
 `scripts/reconcile_reviews.py` merges both sheets, preserves the original answer and revised answer, and leaves `source_2018`, `destination_2025` and `target_transition` unverified. This is deliberate. For true reference labels, inspect the marked pixel and its immediate neighborhood with independent date-appropriate evidence, record both classes (`vegetation`, `built_up`, `water`, `bare`, `other`, or `unclear`), and derive the positive class only from `vegetation` to `built_up`. Any uncertainty should remain excluded from scoring.
 
 The next training path can use a public land-cover product as **weak labels** for development, with spatial blocks separated. The final test set must be independently adjudicated with the two explicit classes; it cannot be produced by the same public model used for training.
+
+The script `gee/export_weak_labels.js` proposes a conservative training raster from Dynamic World. It uses high-probability trees/grass/shrub at the first date and high-probability built-up at the second date for positives, while stable vegetation or stable built-up forms a limited negative set. Crops, water, bare soil, uncertain pixels and other transitions are ignored. The output classes are 0 ignore, 1 weak negative and 2 weak positive. Its probabilities come from a model using Sentinel-2, so it must never be used as an independent test reference.
