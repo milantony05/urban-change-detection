@@ -16,6 +16,8 @@ The output is a 10 m land-cover change estimate, **not** individual building det
 
 **First model checkpoint:** a compact two-date U-Net has trained on conservative Dynamic World weak labels. The geographically separate weak-label check confirms that the training pipeline runs, but it is not independent accuracy evidence. See the [model checkpoint record](docs/phase4_weak_model.md).
 
+**Independent evaluation in preparation:** a blind, one-location-at-a-time review page samples 48 points from held-out Bengaluru blocks. The reviewer assigns separate 2018 and 2025 classes. Kochi has a separate imagery export script and remains untouched by model tuning. See the [reference protocol](docs/independent_reference_protocol.md).
+
 ## Roadmap
 
 1. **Setup:** repository, configuration, data protocol, validation command.
