@@ -10,7 +10,7 @@ The output is a 10 m land-cover change estimate, **not** individual building det
 
 ## Status
 
-**Phase 1 complete. Phase 2 in progress:** public scene inventory is reproducible for North Bengaluru and candidate external-test city Pune. Pilot North Bengaluru composites for 2018 and 2025 passed grid, band and visual checks. Revised final exports with validity counts and scene manifests are pending. No satellite data or trained model is included in Git. See [catalog notes](docs/phase2_catalog.md) and the [pilot inspection](docs/phase2_pilot_inspection.md).
+**Phase 1 complete. North Bengaluru Phase 2 data validated:** paired v3 Sentinel-2 composites, per-pixel valid observation counts, and scene CSVs have passed spatial, band, variation and provenance checks. The source rasters stay outside Git. Pune remains a candidate external test area, with imagery to be acquired before the transfer experiment. See the [validated data record](docs/phase2_validated_data.md) and [catalog notes](docs/phase2_catalog.md).
 
 ## Roadmap
 
