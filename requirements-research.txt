@@ -1,0 +1,4 @@
+-r requirements-model.txt
+-r requirements-geospatial.txt
+Pillow>=10,<13
+matplotlib>=3.8,<4
