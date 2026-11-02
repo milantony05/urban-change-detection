@@ -52,6 +52,10 @@ In Kochi's independent review, 38 of 48 points met the clear-class and medium/hi
 
 **Figure 1.** True positives, false positives and false negatives for the fixed methods in each city's prediction-stratified review. Different target counts and selected sampling strata prevent reading these bars as citywide accuracy or conversion rates.
 
+### 3.1 Exploratory Siamese follow-up
+
+After inspecting the initial evaluation, we ran an exploratory two-date Siamese U-Net with a shared encoder, internally computed NDVI/NDBI, and multi-scale date-difference fusion. It used the same Bengaluru weak-label chips, geographic split and five-epoch training budget, with a lower positive-class loss weight of 10. This experiment was informed by the earlier error review and is **not** a pre-registered external transfer test. The selected checkpoint flagged 65.46% of valid Bengaluru pixels and 44.67% of valid Kochi pixels. On the existing accepted challenge points, its confusion counts were TP=1, FP=16, FN=2, TN=8 in Bengaluru and TP=12, FP=8, FN=9, TN=9 in Kochi. A weight-1 diagnostic still flagged 68.15% of valid Bengaluru pixels. A deeper paired architecture did not correct broad extrapolation from sparse weak supervision. Implementation and commands are documented in `docs/phase6_siamese_experiment.md`.
+
 ## 4. Discussion and limitations
 
 The principal observation is that a favorable weak-label score did not translate into a credible full-area map. Sparse positive labels, incomplete hard negatives and differences between cities can cause broad extrapolation. The independent Bengaluru sample shows that both methods flag many non-target locations. Kochi's selected reference points favor the simple spectral rule over the frozen U-Net. This is evidence against claiming a deep-learning performance improvement on the present evaluation, although it does not establish population performance.
