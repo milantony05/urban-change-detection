@@ -1,0 +1,13 @@
+{
+  "architecture": "siamese",
+  "checkpoint_epoch": 7,
+  "city_holdout_test": {
+    "tp": 81204,
+    "fp": 119657,
+    "fn": 64821,
+    "tn": 2449966,
+    "precision": 0.4042795764234968,
+    "recall": 0.5560965588084232,
+    "f1": 0.46818839618779656
+  }
+}
