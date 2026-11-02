@@ -69,6 +69,7 @@ def main():
     p.add_argument('--architecture', choices=('unet', 'siamese'), default='unet')
     p.add_argument('--positive-weight', type=float, default=None,
                    help='Default 40 for U-Net, 10 for the Siamese experiment')
+    p.add_argument('--positive-chip-weight', type=float, default=8.0)
     args = p.parse_args()
     random.seed(args.seed)
     np.random.seed(args.seed)
@@ -79,7 +80,9 @@ def main():
     validation = Chips(args.chips, 'val')
     rows = list(csv.DictReader((args.chips / 'manifest.csv').open(newline='')))
     positive_ids = {row['id'] for row in rows if row['split']=='train' and int(row['weak_positive_pixels'])>0}
-    weights = [8.0 if file.stem in positive_ids else 1.0 for file in training.files]
+    if args.positive_chip_weight <= 0:
+        raise ValueError('Positive chip weight must be positive')
+    weights = [args.positive_chip_weight if file.stem in positive_ids else 1.0 for file in training.files]
     sampler = WeightedRandomSampler(weights, len(training), replacement=True)
     train_loader = DataLoader(training, batch_size=args.batch_size, sampler=sampler)
     val_loader = DataLoader(validation, batch_size=args.batch_size)
@@ -109,6 +112,7 @@ def main():
             best = metrics['weak_loss']
             torch.save({'model': model.state_dict(), 'seed': args.seed, 'epoch': epoch,
                         'architecture': args.architecture, 'positive_weight': positive_weight,
+                        'positive_chip_weight': args.positive_chip_weight,
                         'warning': 'Trained with Dynamic World weak labels; not independently validated'}, args.out/'best.pt')
     (args.out/'history.json').write_text(json.dumps({'device':device,'history':history},indent=2)+'\n')
 
