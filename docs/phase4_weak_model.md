@@ -19,3 +19,9 @@ python -m scripts.train_weak --chips data/weak_chips --out outputs/weak_model --
 ```
 
 The model checkpoint is an ignored local output. The next milestones are full-AOI inference, meaningful independent pixel labels, and transfer assessment on a locked Kochi dataset. Do not cite weak-label F1 as paper performance.
+
+## Full-area diagnostic
+
+`scripts/predict_raster.py` ran the selected checkpoint over the aligned North Bengaluru composites. It wrote a georeferenced exploratory probability raster and masked pixels with fewer than two clear observations in either period. At the conventional 0.5 threshold, it flagged 1,640,069 of 5,841,346 valid pixels (28.08%). Only 194,528 of 296,187 separate spectral candidates were in that set. This is far too broad for a credible vegetation-to-built-up map and demonstrates that the model extrapolates badly outside the sparse, easy weak-label classes. The probability values are **not calibrated**.
+
+Do not convert these flagged pixels into an area estimate or paper figure implying observed conversion. The next training iteration needs diverse hard negatives such as bare soil, water and seasonal crop differences, plus a genuinely independent reference set. This diagnostic does not establish which method is more accurate.
