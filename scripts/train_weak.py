@@ -10,7 +10,7 @@ import torch
 from torch import nn
 from torch.utils.data import DataLoader, Dataset, WeightedRandomSampler
 
-from urban_change.model import SmallUNet
+from urban_change.model import SmallUNet, SiameseUNet
 
 
 class Chips(Dataset):
@@ -29,15 +29,15 @@ class Chips(Dataset):
         return x, y
 
 
-def masked_loss(logits, target):
+def masked_loss(logits, target, positive_weight=40.0):
     known = target != 0
     truth = (target == 2).float()
     per_pixel = nn.functional.binary_cross_entropy_with_logits(
-        logits, truth, reduction='none', pos_weight=torch.tensor(40.0, device=logits.device))
+        logits, truth, reduction='none', pos_weight=torch.tensor(positive_weight, device=logits.device))
     return (per_pixel * known).sum() / known.sum().clamp(min=1)
 
 
-def evaluate(model, loader, device):
+def evaluate(model, loader, device, positive_weight=40.0):
     model.eval()
     tp = fp = fn = 0
     losses = []
@@ -45,7 +45,7 @@ def evaluate(model, loader, device):
         for x, y in loader:
             x, y = x.to(device), y.to(device)
             logits = model(x)
-            losses.append(float(masked_loss(logits, y)))
+            losses.append(float(masked_loss(logits, y, positive_weight)))
             predicted = logits.sigmoid() >= 0.5
             positive = y == 2
             known = y != 0
@@ -66,6 +66,9 @@ def main():
     p.add_argument('--epochs', type=int, default=5)
     p.add_argument('--batch-size', type=int, default=8)
     p.add_argument('--seed', type=int, default=20261102)
+    p.add_argument('--architecture', choices=('unet', 'siamese'), default='unet')
+    p.add_argument('--positive-weight', type=float, default=None,
+                   help='Default 40 for U-Net, 10 for the Siamese experiment')
     args = p.parse_args()
     random.seed(args.seed)
     np.random.seed(args.seed)
@@ -80,7 +83,10 @@ def main():
     sampler = WeightedRandomSampler(weights, len(training), replacement=True)
     train_loader = DataLoader(training, batch_size=args.batch_size, sampler=sampler)
     val_loader = DataLoader(validation, batch_size=args.batch_size)
-    model = SmallUNet().to(device)
+    positive_weight = args.positive_weight if args.positive_weight is not None else (10.0 if args.architecture == 'siamese' else 40.0)
+    if positive_weight <= 0:
+        raise ValueError('Positive weight must be positive')
+    model = (SiameseUNet() if args.architecture == 'siamese' else SmallUNet()).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
     args.out.mkdir(parents=True, exist_ok=True)
     best = float('inf')
@@ -91,17 +97,18 @@ def main():
         for x, y in train_loader:
             x, y = x.to(device), y.to(device)
             optimizer.zero_grad()
-            loss = masked_loss(model(x), y)
+            loss = masked_loss(model(x), y, positive_weight)
             loss.backward()
             optimizer.step()
             train_losses.append(float(loss.detach()))
-        metrics = evaluate(model, val_loader, device)
+        metrics = evaluate(model, val_loader, device, positive_weight)
         record = {'epoch': epoch, 'train_weak_loss': float(np.mean(train_losses)), **metrics}
         history.append(record)
         print(json.dumps(record), flush=True)
         if metrics['weak_loss'] < best:
             best = metrics['weak_loss']
             torch.save({'model': model.state_dict(), 'seed': args.seed, 'epoch': epoch,
+                        'architecture': args.architecture, 'positive_weight': positive_weight,
                         'warning': 'Trained with Dynamic World weak labels; not independently validated'}, args.out/'best.pt')
     (args.out/'history.json').write_text(json.dumps({'device':device,'history':history},indent=2)+'\n')
 
