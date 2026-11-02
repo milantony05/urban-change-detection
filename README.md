@@ -16,6 +16,12 @@ Given co-registered Sentinel-2 images from two dates, predict which 10 m pixels 
 
 The Siamese model's three-seed mean F1 was 0.412 with the original loss and sampling setting, and 0.441 with a conservative setting that raised precision and lowered recall. Performance varies greatly by city. These are exploratory results: follow-up experiments were designed after the first official test result was viewed. See the [full metrics](docs/oscd_results.md), [three-seed comparison](docs/oscd_weight_sensitivity.md), [city figure](paper/figures/oscd_city_f1.svg) and [working manuscript](paper/oscd_manuscript_draft.md).
 
+## Showcase
+
+- Open [the interactive dashboard](dashboard/index.html) after downloading or cloning the repository. It is a self-contained HTML file and works offline; select a city and model to inspect F1 and confusion counts.
+- Open [the Jupyter showcase notebook](notebooks/oscd_showcase.ipynb) on GitHub to see its saved figures and narrative. To run the cells locally, install `requirements-research.txt`, launch `jupyter lab` from the repository root, and open the notebook.
+- The dashboard is generated from committed metrics with `python -m scripts.build_dashboard`; the notebook is generated with `python -m scripts.build_showcase_notebook`. Neither requires retraining.
+
 ## Reproduce
 
 Install Python 3.10 or later and dependencies:
