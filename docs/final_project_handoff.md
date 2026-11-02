@@ -2,6 +2,8 @@
 
 **Project status:** the core deep learning project is complete as an exploratory benchmark. Two PyTorch architectures, one spectral baseline, human-labeled data preparation, a city-separated evaluation, three-seed sensitivity analysis, figures, and a working manuscript are available. A journal submission needs further confirmatory research; it is not complete merely because this project is demonstrable.
 
+**Visual showcase:** open `dashboard/index.html` in any browser; it works without a server or dataset files. Open `notebooks/oscd_showcase.ipynb` on GitHub for pre-rendered figures or run it locally in JupyterLab. Both use the committed city-level CSV and show the limitations alongside the scores.
+
 ## Formal problem statement
 
 Develop and evaluate compact paired-image neural networks for binary urban change detection in multispectral Sentinel-2 imagery, with particular attention to performance variation across unseen cities and sparse-change settings. Compare an early-fusion U-Net and a shared-encoder Siamese U-Net against a validation-tuned spectral change-vector rule using OSCD's human-annotated masks. The predicted class is **urban change**, including roads or buildings; it does not specify a vegetation-to-built-up transition.
