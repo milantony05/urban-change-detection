@@ -11,7 +11,7 @@ from torch import nn
 from torch.utils.data import DataLoader, WeightedRandomSampler
 
 from scripts.train_weak import Chips
-from urban_change.model import SmallUNet
+from urban_change.model import SmallUNet, SiameseUNet
 
 
 def score(model, loader, device):
@@ -37,6 +37,7 @@ def main():
     p.add_argument('--out', type=Path, default=Path('outputs/oscd_model'))
     p.add_argument('--epochs', type=int, default=15)
     p.add_argument('--batch-size', type=int, default=8)
+    p.add_argument('--architecture', choices=('unet', 'siamese'), default='unet')
     args = p.parse_args()
     random.seed(20261102)
     np.random.seed(20261102)
@@ -51,7 +52,7 @@ def main():
     train = DataLoader(training, batch_size=args.batch_size,
                        sampler=WeightedRandomSampler(weights, len(training), replacement=True))
     val = DataLoader(validation, batch_size=args.batch_size)
-    model = SmallUNet().to(device)
+    model = (SiameseUNet() if args.architecture == 'siamese' else SmallUNet()).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
     args.out.mkdir(parents=True, exist_ok=True)
     best = -1.0
@@ -70,14 +71,15 @@ def main():
         print(json.dumps(history[-1]), flush=True)
         if result['f1'] > best:
             best = result['f1']
-            torch.save({'model': model.state_dict(), 'architecture': 'unet',
+            torch.save({'model': model.state_dict(), 'architecture': args.architecture,
                         'epoch': epoch, 'dataset': 'OSCD', 'task': 'binary urban change',
                         'warning': 'OSCD urban change does not mean vegetation-to-built-up'}, args.out/'best.pt')
     (args.out/'history.json').write_text(json.dumps({'device': device, 'history': history}, indent=2)+'\n')
     checkpoint = torch.load(args.out/'best.pt', map_location=device, weights_only=False)
     model.load_state_dict(checkpoint['model'])
     test = score(model, DataLoader(Chips(args.chips, 'test'), batch_size=args.batch_size), device)
-    (args.out/'test_metrics.json').write_text(json.dumps({'checkpoint_epoch': checkpoint['epoch'],
+    (args.out/'test_metrics.json').write_text(json.dumps({'architecture': args.architecture,
+                                                        'checkpoint_epoch': checkpoint['epoch'],
                                                         'city_holdout_test': test}, indent=2)+'\n')
     print('Untouched official test cities:', json.dumps(test))
 
