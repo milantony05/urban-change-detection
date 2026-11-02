@@ -31,6 +31,7 @@ def inspect(path: Path) -> dict:
                 "median": float(np.median(values)),
                 "p99": float(np.percentile(values, 99)),
                 "maximum": float(values.max()),
+                "unique_values": int(np.unique(values).size),
             })
         return {
             "file": path.name,
@@ -56,6 +57,10 @@ def main() -> None:
     grids = {(r["width"], r["height"], r["crs"], tuple(r["transform"]), tuple(r["bounds"]))
              for r in report["rasters"]}
     report["same_grid"] = len(grids) == 1
+    report["reflectance_has_spatial_variation"] = all(
+        all(b["unique_values"] > 100 for b in raster["bands"][:6])
+        for raster in report["rasters"]
+    )
     text = json.dumps(report, indent=2) + "\n"
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
