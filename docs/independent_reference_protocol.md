@@ -7,3 +7,7 @@ The user sees 2018 and 2025 context and close views of the same 10 m square, out
 The page is self-contained and saves progress in the local browser. The reviewer downloads a CSV and returns it. The CSV includes the hidden sampling stratum for analysis after submission. This is a first independent reference batch, and its small size limits any journal claim. For a paper, enlarge the reference set, seek a second reviewer on disagreements, document visual evidence, report per-stratum errors, and evaluate Kochi after model selection is frozen.
 
 To rebuild, run `python -m scripts.build_reference_review` with the five aligned raster arguments shown by `--help`. The page embeds rendered JPEG views, not the source GeoTIFFs. Keep the source imagery and model output outside Git.
+
+## Kochi external review
+
+Kochi was never used in model fitting or threshold tuning. The second page uses the same four blind prediction strata and one location per 1 km block, with `--all-blocks --city Kochi` and no weak-label raster. Its returned class-by-date CSV permits a first external challenge comparison. The reviewer should not infer conversion from a general urbanization impression; the 10 m outlined square must be vegetation in 2018 and built-up in 2025. In coastal Kochi, water, wetland vegetation and bare reclamation are particularly important hard cases. The sample remains stratified and too small for an area prevalence estimate.
