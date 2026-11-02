@@ -33,7 +33,8 @@ function exportPeriod(start, end, label) {
   var composite = reflectance
     .addBands(validCount)
     .unmask(0)
-    .clip(aoi);
+    .clip(aoi)
+    .toUint16(); // Cast the complete final image, including any Byte band.
 
   print(label + ' scene count', raw.size());
   print(label + ' scene IDs', raw.aggregate_array('system:index'));
