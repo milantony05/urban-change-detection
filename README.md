@@ -14,6 +14,8 @@ The output is a 10 m land-cover change estimate, **not** individual building det
 
 **Phase 3 started:** a spectral candidate baseline and an independent annotation protocol are available. Kochi replaces Pune as the candidate external city. The baseline has no accuracy claim until human-checked reference labels exist. See the [label protocol](docs/phase3_labels.md).
 
+**First model checkpoint:** a compact two-date U-Net has trained on conservative Dynamic World weak labels. The geographically separate weak-label check confirms that the training pipeline runs, but it is not independent accuracy evidence. See the [model checkpoint record](docs/phase4_weak_model.md).
+
 ## Roadmap
 
 1. **Setup:** repository, configuration, data protocol, validation command.
