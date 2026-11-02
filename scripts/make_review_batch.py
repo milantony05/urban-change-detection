@@ -48,7 +48,13 @@ def main():
                 ident = f'{kind}_{len(rows)+1:03d}'
                 draw.text((4, 4), f'{ident}  2018', fill='black')
                 draw.text((260, 4), '2025', fill='black')
-                draw.rectangle((254, 150, 258, 154), fill='yellow')
+                # The selected pixel is the center of each 128 x 128 crop.
+                # Show it on BOTH dates, rather than on the separator.
+                for cx in (128, 384):
+                    cy = 152
+                    draw.ellipse((cx-5, cy-5, cx+5, cy+5), outline='yellow', width=2)
+                    draw.line((cx-9, cy, cx-6, cy), fill='yellow', width=2)
+                    draw.line((cx+6, cy, cx+9, cy), fill='yellow', width=2)
                 card.save(a.out / f'{ident}.png')
                 lon, lat = rasterio.warp.transform(b.crs, 'EPSG:4326', [b.xy(y, x)[0]], [b.xy(y, x)[1]])
                 rows.append([ident, kind, x, y, round(lon[0], 6), round(lat[0], 6), '', ''])
