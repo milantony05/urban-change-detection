@@ -13,7 +13,7 @@ data/oscd/
   Onera Satellite Change Detection dataset - Test Labels/
 ```
 
-The images folder contains city directories with `imgs_1_rect/B02.tif` through `B12.tif` and `imgs_2_rect`; each label folder contains `city/cm/cm.png`. Keep the archive files and extracted data outside Git. Expected SHA-256 archives according to TorchGeo's dataset implementation: Images `940b87887511058a933e67cd6d0e43e2eb825a55d8e79a50983dee7f23003656`; Train Labels `89fb54cd12ad0dbea6c447528139dec305b865294215434bf6dd170fb8fd3ca5`; Test Labels `2e195eaa1b788b99fa93ea8073e3780bc0b763000b0c49dbf70548acf1e5d67d`. The source may change; record the actual hashes.
+The images folder contains city directories with `imgs_1_rect/B02.tif` through `B12.tif` and `imgs_2_rect`; each label folder contains `city/cm/city-cm.tif`. The TIFF masks encode no change=1 and change=2. Use these rather than the preview PNGs; the `aguasclaras` PNG includes intermediate grayscale values. Keep the archive files and extracted data outside Git. Expected SHA-256 archives according to TorchGeo's dataset implementation: Images `940b87887511058a933e67cd6d0e43e2eb825a55d8e79a50983dee7f23003656`; Train Labels `89fb54cd12ad0dbea6c447528139dec305b865294215434bf6dd170fb8fd3ca5`; Test Labels `2e195eaa1b788b99fa93ea8073e3780bc0b763000b0c49dbf70548acf1e5d67d`. The received Train and Test archives match their expected hashes. The Images archive has not yet become available in this workspace.
 
 ## Run
 
