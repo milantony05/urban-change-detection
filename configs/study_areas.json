@@ -25,12 +25,26 @@
       "notes": "Illustrative AOI and dry-season windows; inspect imagery and adjust before acquisition. Hold out spatial blocks within the AOI."
     },
     {
-      "id": "independent_city",
+      "id": "pune",
       "role": "external_test",
-      "bbox": null,
-      "periods": [],
-      "status": "to_select",
-      "notes": "Choose after checking cloud-free imagery, visible changes, and independent reference-label feasibility. Never use for training or threshold tuning."
+      "bbox": [
+        73.72,
+        18.43,
+        74.03,
+        18.67
+      ],
+      "periods": [
+        {
+          "start": "2018-01-01",
+          "end": "2018-03-31"
+        },
+        {
+          "start": "2025-01-01",
+          "end": "2025-03-31"
+        }
+      ],
+      "status": "candidate",
+      "notes": "Candidate external test AOI. Catalog inspection only; do not inspect change labels or tune model using this city. Confirm AOI imagery and annotation feasibility before locking split."
     }
   ]
 }
