@@ -39,6 +39,10 @@ The first Siamese test motivated a second setting with positive pixel weight red
 
 The conservative Siamese setting averaged F1 0.732 in Montpellier and 0.699 in Las Vegas but only 0.016 in Valencia. Valencia has 0.37% annotated change in its evaluated chips, and the original Siamese model produced many false positives there. The result suggests that sparse changes can be a difficult operating regime; scene characteristics and label structure may also contribute, so prevalence alone should not be asserted as the cause. Chongqing shows the opposite tradeoff: the original setting averaged F1 0.556 and the conservative setting 0.349. These cases motivate separate analysis of false alarms, missed change, and shift in land-cover appearance across cities.
 
+![Illustrative OSCD validation-city chip](figures/oscd_validation_example.svg)
+
+**Figure 2.** Before and after Sentinel-2 RGB, human change mask, and predicted probabilities for a fixed Abu Dhabi validation-city chip. The chip was selected for visible change and is an illustration, not an estimate of accuracy or a test-set example.
+
 ## 4. Limitations and next experiments
 
 Model families and weight settings were compared after an exploratory first test result had already been viewed. The test labels did not enter gradient updates, but this sequence limits claims about wholly untouched model selection. A final paper should predefine comparisons on a new external holdout and report repeated seeds, per-city precision/recall, uncertainty and error examples. The OSCD binary mask does not distinguish vegetation-to-built-up from other urban change, and direct prediction on Bengaluru or Kochi composites would be qualitative transfer rather than validated performance on the same label definition. OSCD imagery and our Google Earth Engine seasonal composites may differ in acquisition and processing. No claim about publication tier or superiority over published methods follows from this pilot.
@@ -46,3 +50,7 @@ Model families and weight settings were compared after an exploratory first test
 ## Reference
 
 1. Daudt, R. C., Le Saux, B., Boulch, A., & Gousseau, Y. (2018). [Urban Change Detection for Multispectral Earth Observation Using Convolutional Neural Networks](https://doi.org/10.1109/IGARSS.2018.8518015). *IEEE International Geoscience and Remote Sensing Symposium*, 2115–2118. Official dataset: https://rcdaudt.github.io/oscd/.
+
+## Code and data availability
+
+Code, parameters, per-city metrics, and figures are available in the [project repository](https://github.com/milantony05/urban-change-detection). The original OSCD imagery and annotations are available from the dataset author's site [1]; large images, chips, and checkpoints are excluded from Git. See `docs/final_project_handoff.md` for exact commands. The uploaded source data and derived artifacts should be checked for redistribution terms before any journal submission.
