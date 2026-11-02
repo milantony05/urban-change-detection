@@ -7,6 +7,7 @@ import argparse
 import base64
 import io
 import json
+import re
 from pathlib import Path
 
 import numpy as np
@@ -102,6 +103,8 @@ def main():
         template = Path(__file__).with_name('reference_review_template.html').read_text()
         html = template.replace('/*DATA_PLACEHOLDER*/[]', json.dumps(items, separators=(',', ':')))
         html = html.replace('North Bengaluru land-cover review', args.city + ' land-cover review')
+        city_slug = re.sub(r'[^a-z0-9]+', '_', args.city.lower()).strip('_')
+        html = html.replace('independent_reference_batch_01.csv', f'{city_slug}_reference_batch_01.csv')
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(html, encoding='utf-8')
         print('Review items:', len(items), {g: sum(i['group']==g for i in items) for g in groups})
