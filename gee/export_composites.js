@@ -27,14 +27,15 @@ function exportPeriod(start, end, label) {
   // GeoTIFF export requires every band in this image to use a compatible type.
   // Scene counts are small, but UInt16 matches the reflectance bands.
   var validCount = clear.select('B2').count().rename('valid_count').toUint16();
-  var reflectance = clear.median()
-    .resample('bilinear')
-    .round().toUint16();
+  // Evaluate the median directly on the requested 10 m export grid.
+  // Resampling the reduced composite here can interpolate its coarse default
+  // projection and collapse the AOI to nearly constant values.
+  var reflectance = clear.median().round().toUint16();
   var composite = reflectance
     .addBands(validCount)
     .unmask(0)
     .clip(aoi)
-    .toUint16(); // Cast the complete final image, including any Byte band.
+    .toUint16();
 
   print(label + ' scene count', raw.size());
   print(label + ' scene IDs', raw.aggregate_array('system:index'));
@@ -76,5 +77,5 @@ function exportPeriod(start, end, label) {
 
 Map.centerObject(aoi, 11);
 Map.addLayer(aoi, {color: 'yellow'}, 'AOI');
-exportPeriod('2018-01-01', '2018-04-01', '2018_dry_season_v2');
-exportPeriod('2025-01-01', '2025-04-01', '2025_dry_season_v2');
+exportPeriod('2018-01-01', '2018-04-01', '2018_dry_season_v3');
+exportPeriod('2025-01-01', '2025-04-01', '2025_dry_season_v3');
