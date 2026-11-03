@@ -1,10 +1,18 @@
-# Sentinel-2 urban change detection
+# Bengaluru urban-change screening with Sentinel-2
 
-A final-year deep learning and GIS project using the human-labeled [OSCD](https://rcdaudt.github.io/oscd/) dataset. It compares a two-date early-fusion U-Net, a shared-encoder Siamese U-Net and a spectral change-vector baseline on **unseen cities**.
+This final-year project uses paired 2018 and 2025 Sentinel-2 composites to **highlight possible urban changes in North Bengaluru for human review**. A compact Siamese network was trained on the labeled OSCD dataset. The Bengaluru candidate map is the main application; [the 40-site review workflow](docs/bengaluru_screening.md) provides a small, transparent local check. Bengaluru review labels and accuracy have not yet been collected.
 
 ## Problem
 
-Given co-registered Sentinel-2 images from two dates, predict which 10 m pixels contain urban change such as new buildings or roads. The 24 OSCD cities are separated into ten for training, four for validation and ten official test cities. The project examines how architecture, class imbalance and geography affect generalization. OSCD's binary urban-change label does **not** identify vegetation-to-built-up conversion specifically.
+Finding possible changes across a large satellite scene by eye is slow. The model assigns a change probability to each valid 10 m pixel so a person can inspect promising locations. It may confuse seasonal or imaging differences with construction. OSCD training and city-disjoint evaluation supply an external benchmark, while sampled Bengaluru observations address whether its local alerts are useful. The OSCD target is general annotated urban change; it is not specifically vegetation-to-built-up conversion.
+
+## Bengaluru workflow
+
+The existing [raster predictor](scripts/predict_raster.py) reads aligned six-band plus valid-count composites and a frozen OSCD checkpoint. The [audit script](scripts/bengaluru_audit.py) produces 20 blinded alert cards and 20 low-score cards, with a CSV for human labels and a count summary. See [step-by-step instructions](docs/bengaluru_screening.md). Source imagery, trained checkpoints and local probability rasters are not committed; the local audit has not yet been run, so no Bengaluru score is claimed.
+
+## OSCD benchmark
+
+The models were trained and evaluated with ten training, four validation, and ten official test cities. OSCD results below are exploratory because the first official test was viewed before later design choices.
 
 ## Results
 
